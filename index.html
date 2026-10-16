@@ -85,9 +85,21 @@ footer{margin-top:22px;display:flex;justify-content:space-between;align-items:ce
 <script>
 /* ===== JavaScript (ES5, tanpa fitur baru) ===== */
 var todos=[],filter='all',prio=2;
-try{var s=localStorage.getItem('neo-todos');if(s)todos=JSON.parse(s)||[]}catch(e){}
-if(!todos.length)todos=[{id:1,text:'Contoh: minum air putih',done:false,p:1},{id:2,text:'Ketuk kotak untuk selesai',done:false,p:2}];
-function save(){try{localStorage.setItem('neo-todos',JSON.stringify(todos))}catch(e){}}
+var STORAGE_KEY='neo-todos';
+var SEEDED_KEY='neo-todos-seeded';
+var hasSaved=false;
+var hasSeeded=false;
+try{
+  hasSaved=localStorage.getItem(STORAGE_KEY)!==null;
+  hasSeeded=localStorage.getItem(SEEDED_KEY)==='1';
+  var s=localStorage.getItem(STORAGE_KEY);
+  if(s!==null)todos=JSON.parse(s)||[];
+}catch(e){}
+if(!hasSaved&&!hasSeeded){
+  todos=[{id:1,text:'Contoh: minum air putih',done:false,p:1},{id:2,text:'Ketuk kotak untuk selesai',done:false,p:2}];
+  try{localStorage.setItem(SEEDED_KEY,'1')}catch(e){}
+}
+function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(todos));localStorage.setItem(SEEDED_KEY,'1')}catch(e){}}
 function $(i){return document.getElementById(i)}
 function each(sel,fn){var n=document.querySelectorAll(sel);for(var i=0;i<n.length;i++)fn(n[i])}
 
